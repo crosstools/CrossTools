@@ -23,8 +23,11 @@ powershell -executionpolicy bypass -File .\build\build.ps1
 
 If you are on a Unix-like OS:
 
-1. Go to terminal and `cd` to root directory. Run:
+1. Go to terminal and `cd` to root directory. Then, run:
 ```sh
 chmod +x ./build/build.sh
 ```
-(to give execute permission to the script), and run `./build/build.sh`.
+(to give execute permission to the script), and run:
+```sh
+./build/build.sh
+```
