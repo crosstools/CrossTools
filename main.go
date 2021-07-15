@@ -76,9 +76,7 @@ func main() {
 	}
 
 	switch getopt.Arg(0) {
-	case "install":
-		commandNotImplementedError(getopt.Arg(0))
-	case "update":
+	case "install", "update":
 		commandNotImplementedError(getopt.Arg(0))
 	case "newfile":
 		filename := getopt.Arg(1)
