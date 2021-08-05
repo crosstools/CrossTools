@@ -10,11 +10,12 @@ $Platforms = @{
 
 # gc (golang) exists in this system
 if (Get-Command "go.exe" -ErrorAction SilentlyContinue) {
+    Write-Output "Starting to compile"
     foreach ($Platform in $Platforms.GetEnumerator()) {
         for ($i = 0; $i -lt $Platform.Value.Count; $i++) {
             $Env:GOOS = $Platform.Name; $Env:GOARCH = $Platform.Value[$i]; go build -o ("crosstools-$($Platform.Name)-$($Platform.Value[$i])")
-            Write-Progress -Activity ("Compiling $($Platform.Name)") -Status 'Progress->' -PercentComplete ($i + 1)
         }
+        Write-Output "$($Platform.Name) compiled"
     }
     Write-Output "CrossTools was built successfully in the root directory"
 } else {
