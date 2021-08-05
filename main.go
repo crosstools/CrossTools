@@ -20,7 +20,7 @@ func cliErrorln(a ...interface{}) (n int, err error) {
 var (
 	versionFlag   = getopt.BoolLong("version", 'v', "", "Get the current version of "+utils.NAME)
 	helpFlag      = getopt.BoolLong("help", 'h', "", "Display help/usage")
-	directoryFlag = getopt.BoolLong("dir", 'd', "", "Directory instead of fileutils.NAME")
+	directoryFlag = getopt.BoolLong("dir", 'd', "", "Directory instead of filename")
 )
 
 func Usage() {
@@ -30,16 +30,16 @@ Commands of %s:
         Install crosstools into system
   update
         Update crosstools in system
-  create <fileutils.NAME>
-        Create a new file with <fileutils.NAME>
+  create <filename>
+        Create a new file with <filename>
   -d create <directory>
         Create a new directory (using the -d or --dir flag) with <directory>
-  remove <fileutils.NAME/directory>
-        Removes the <fileutils.NAME/directory>
+  remove <filename/directory>
+        Removes the <filename/directory>
 
 Deprecated commands:
-  newfile <fileutils.NAME>
-        Create a new file with the <fileutils.NAME>
+  newfile <filename>
+        Create a new file with the <filename>
 `
 	getopt.PrintUsage(os.Stderr)
 	fmt.Fprintf(os.Stderr, usage, os.Args[0])
