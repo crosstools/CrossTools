@@ -5,38 +5,23 @@ import (
 	"os"
 	"runtime"
 
+	"github.com/crosstools/crosstools/commands"
+	"github.com/crosstools/crosstools/utils"
 	"github.com/fatih/color"
 	"github.com/pborman/getopt/v2"
 )
 
-// Global information
-const (
-	NAME    = "crosstools"
-	VERSION = "1.0.0"
-)
+// Deprecated: Prints to os.Stderr with NAME + " error: " and the error itself. Use utils.CliErrorln instead!
+func cliErrorln(a ...interface{}) (n int, err error) {
+	return fmt.Fprintln(os.Stderr, utils.NAME, "error:", a)
+}
 
 // Flags
 var (
-	versionFlag   = getopt.BoolLong("version", 'v', "", "Get the current version of "+NAME)
+	versionFlag   = getopt.BoolLong("version", 'v', "", "Get the current version of "+utils.NAME)
 	helpFlag      = getopt.BoolLong("help", 'h', "", "Display help/usage")
-	directoryFlag = getopt.BoolLong("dir", 'd', "", "Directory instead of filename")
+	directoryFlag = getopt.BoolLong("dir", 'd', "", "Directory instead of fileutils.NAME")
 )
-
-// func cliError(a ...interface{}) (n int, err error) {
-// 	return fmt.Fprint(os.Stderr, NAME, "error:", a)
-// }
-
-func cliErrorln(a ...interface{}) (n int, err error) {
-	return fmt.Fprintln(os.Stderr, NAME, "error:", a)
-}
-
-func cliErrorf(format string, a ...interface{}) (n int, err error) {
-	return fmt.Fprintf(os.Stderr, NAME+" error: "+format, a...)
-}
-
-func commandNotImplementedError(command string) {
-	cliErrorf("Command '%s' is not yet implemented", command)
-}
 
 func Usage() {
 	usage := `
@@ -45,16 +30,16 @@ Commands of %s:
         Install crosstools into system
   update
         Update crosstools in system
-  create <filename>
-        Create a new file with <filename>
+  create <fileutils.NAME>
+        Create a new file with <fileutils.NAME>
   -d create <directory>
         Create a new directory (using the -d or --dir flag) with <directory>
-  remove <filename/directory>
-        Removes the <filename/directory>
+  remove <fileutils.NAME/directory>
+        Removes the <fileutils.NAME/directory>
 
 Deprecated commands:
-  newfile <filename>
-        Create a new file with the <filename>
+  newfile <fileutils.NAME>
+        Create a new file with the <fileutils.NAME>
 `
 	getopt.PrintUsage(os.Stderr)
 	fmt.Fprintf(os.Stderr, usage, os.Args[0])
@@ -73,6 +58,7 @@ func main() {
 	// Get the remaining positional parameters
 	// args := getopt.Args()
 
+	// Deprecated: check panics the err if err is not nil. Please use utils.Check instead!
 	check := func(err error) {
 		if err != nil {
 			panic(err)
@@ -80,7 +66,7 @@ func main() {
 	}
 
 	if *versionFlag {
-		fmt.Printf("%s version %s %s\n", NAME, VERSION, runtime.GOOS)
+		fmt.Printf("%s version %s %s\n", utils.NAME, utils.VERSION, runtime.GOOS)
 		return
 	}
 
@@ -91,27 +77,11 @@ func main() {
 
 	switch getopt.Arg(0) {
 	case "install", "update":
-		commandNotImplementedError(getopt.Arg(0))
+		utils.CommandNotImplementedError(getopt.Arg(0))
 	case "create":
-		arg := getopt.Arg(1)
-
-		if arg != "" {
-			if !*directoryFlag {
-				_, err := os.Create(arg)
-				check(err)
-			} else {
-				check(os.Mkdir(arg, 0755))
-			}
-		}
+		commands.Create(getopt.Arg(1), *directoryFlag)
 	case "remove":
-		arg := getopt.Arg(1)
-
-		if arg != "" {
-			err := os.Remove(arg)
-			check(err)
-		} else {
-			cliErrorln("File name must be included for", getopt.Arg(0), "command")
-		}
+		commands.Remove(getopt.Arg(1))
 
 	// Deprecated commands
 	case "newfile":
@@ -121,11 +91,11 @@ func main() {
 			_, err := os.Create(filename)
 			check(err)
 		} else {
-			cliErrorln("File name must be included for", getopt.Arg(0), "command")
+			cliErrorln("Filename must be included for", getopt.Arg(0), "command")
 		}
 
 	default:
-		cliErrorf("Unknown command '%s'\n", getopt.Arg(0))
+		utils.CliErrorf("Unknown command '%s'\n", getopt.Arg(0))
 	}
 
 }
